@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "org.samo_lego.antilogout.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"CLogoutRulesPlayer",
+		"MPlayerList",
+		"MServerGamePacketListenerImpl",
+		"accessor.AServerPlayer"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

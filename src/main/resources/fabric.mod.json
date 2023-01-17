@@ -1,41 +1,31 @@
 {
 	"schemaVersion": 1,
-	"id": "faircombat",
+	"id": "antilogout",
 	"version": "${version}",
-	"name": "FairCombat",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Fair Combat",
+	"description": "No more combat-logouts.",
 	"authors": [
-		"Me!"
+		"samo_lego"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/faircombat/icon.png",
+	"license": "LGPL-3.0",
+	"icon": "assets/antilogout/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"org.samo_lego.ExampleMod"
-		],
-		"client": [
-			"org.samo_lego.ExampleModClient"
+		"server": [
+			"org.samo_lego.antilogout.AntiLogout"
 		]
 	},
 	"mixins": [
-		"faircombat.mixins.json",
-		{
-			"config": "faircombat.client.mixins.json",
-			"environment": "client"
-		}
+		"antilogout.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.12",
-		"minecraft": "~1.19.3",
+		"minecraft": ">=1.19.3",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
