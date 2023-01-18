@@ -1,7 +1,9 @@
 package org.samo_lego.antilogout;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import org.samo_lego.antilogout.config.LogoutConfig;
+import org.samo_lego.antilogout.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,6 @@ public class AntiLogout implements DedicatedServerModInitializer {
 
     @Override
     public void onInitializeServer() {
-
+        AttackEntityCallback.EVENT.register(EventHandler::onAttack);
     }
 }

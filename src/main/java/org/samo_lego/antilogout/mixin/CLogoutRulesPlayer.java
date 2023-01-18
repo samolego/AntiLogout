@@ -16,16 +16,24 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     private boolean disconnected;
 
     @Unique
-    private boolean allowDisconnect = false;
+    private long allowDisconnect = 0;
+
+    @Shadow
+    public abstract void disconnect();
 
     @Override
     public boolean al_allowDisconnect() {
-        return this.allowDisconnect;
+        return this.allowDisconnect != -1 && this.allowDisconnect <= System.currentTimeMillis();
     }
 
     @Override
-    public void al_setAllowDisconnect(boolean allowDisconnect) {
-        this.allowDisconnect = allowDisconnect;
+    public void al_setAllowDisconnectAt(long systemTime) {
+        this.allowDisconnect = systemTime;
+    }
+
+    @Override
+    public void al_setAllowDisconnect(boolean allow) {
+        this.allowDisconnect = allow ? 0 : -1;
     }
 
 
@@ -37,6 +45,9 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     @Inject(method = "doTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getInventory()Lnet/minecraft/world/entity/player/Inventory;"), cancellable = true)
     private void onTick(CallbackInfo ci) {
         if (this.disconnected) {
+            if (this.al_allowDisconnect()) {
+                this.disconnect();
+            }
             ci.cancel();
         }
     }
