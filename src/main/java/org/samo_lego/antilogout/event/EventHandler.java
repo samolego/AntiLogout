@@ -1,8 +1,12 @@
 package org.samo_lego.antilogout.event;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -19,5 +23,12 @@ public class EventHandler {
             ((ILogoutRules) entity).al_setAllowDisconnectAt(allowedDc);
         }
         return InteractionResult.PASS;
+    }
+
+    public static void onDeath(LivingEntity livingEntity, DamageSource damageSource) {
+        if (livingEntity instanceof ILogoutRules player && player.al_isFake()) {
+            // Remove player from online players
+            ((ServerPlayer) player).connection.onDisconnect(Component.empty());
+        }
     }
 }

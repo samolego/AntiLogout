@@ -26,7 +26,8 @@ public class MPlayerList {
     private MinecraftServer server;
 
     /**
-     * When a player wants to connect, we allow players with same uuid to be disconnected.
+     * When a player wants to connect but is still online,
+     * we allow players with same uuid to be disconnected.
      *
      * @param gameProfile
      * @param cir
