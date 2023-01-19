@@ -6,8 +6,7 @@
     "CLogoutRulesPlayer",
     "MConnection",
     "MPlayerList",
-    "MServerGamePacketListenerImpl",
-    "accessor.AServerGamePacketListenerImpl"
+    "MServerGamePacketListenerImpl"
   ],
   "injectors": {
     "defaultRequire": 1
