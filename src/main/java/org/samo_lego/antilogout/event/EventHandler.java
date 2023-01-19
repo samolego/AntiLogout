@@ -17,7 +17,7 @@ import static org.samo_lego.antilogout.AntiLogout.config;
 
 public class EventHandler {
     public static InteractionResult onAttack(Player player, Level level, InteractionHand interactionHand, Entity entity, @Nullable EntityHitResult entityHitResult) {
-        long allowedDc = System.currentTimeMillis() + config.disconnectTimeout;
+        long allowedDc = System.currentTimeMillis() + config.combatTimeout;
         ((ILogoutRules) player).al_setAllowDisconnectAt(allowedDc);
         if (entity instanceof ILogoutRules) {
             ((ILogoutRules) entity).al_setAllowDisconnectAt(allowedDc);

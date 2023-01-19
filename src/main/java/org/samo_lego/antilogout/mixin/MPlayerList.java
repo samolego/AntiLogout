@@ -1,7 +1,6 @@
 package org.samo_lego.antilogout.mixin;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.network.Connection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -49,8 +48,8 @@ public class MPlayerList {
         }
     }
 
-    @Inject(method = "placeNewPlayer", at = @At("RETURN"))
-    private void onPlayerJoin(Connection connection, ServerPlayer player, CallbackInfo ci) {
-        //((AServerGamePacketListenerImpl) player.connection).setConnection(connection);
+    @Inject(method = "remove", at = @At("RETURN"))
+    private void onPlayerLeave(ServerPlayer player, CallbackInfo ci) {
+        //ILogoutRules.DISCONNECTED_PLAYERS.remove(player);
     }
 }

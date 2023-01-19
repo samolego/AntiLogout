@@ -6,6 +6,7 @@
     "CLogoutRulesPlayer",
     "MConnection",
     "MPlayerList",
+    "MServerConnectionListener",
     "MServerGamePacketListenerImpl"
   ],
   "injectors": {

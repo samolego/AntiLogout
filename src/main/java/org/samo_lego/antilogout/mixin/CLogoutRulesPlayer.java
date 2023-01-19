@@ -56,6 +56,10 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     @Override
     public void al_onRealDisconnect() {
         this.disconnected = true;
+
+        if (!this.al_allowDisconnect()) {
+            DISCONNECTED_PLAYERS.add((ServerPlayer) (Object) this);
+        }
     }
 
     @Inject(method = "hasDisconnected", at = @At("HEAD"), cancellable = true)
@@ -65,8 +69,7 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
 
     @Inject(method = "doTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getInventory()Lnet/minecraft/world/entity/player/Inventory;"), cancellable = true)
     private void onTick(CallbackInfo ci) {
-        if (this.disconnected) {
-            System.out.println("Disconnected tick!");
+        if (this.al_isFake()) {
             if (this.al_allowDisconnect()) {
                 this.connection.disconnect(Component.empty());
             }
@@ -81,5 +84,10 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
             // Remove player from online players
             this.connection.onDisconnect(Component.empty());
         }
+    }
+
+    @Inject(method = "disconnect", at = @At("TAIL"))
+    private void al_disconnect(CallbackInfo ci) {
+        DISCONNECTED_PLAYERS.remove((ServerPlayer) (Object) this);
     }
 }
