@@ -45,9 +45,6 @@ public abstract class MServerGamePacketListenerImpl {
     private void al_onDisconnect(Component dcReason, CallbackInfo ci) {
         // Generic disconnect is handled by MConnection#al_handleDisconnection
         if (!((ILogoutRules) this.getPlayer()).al_allowDisconnect() && dcReason == AntiLogout.AFK_MESSAGE) {
-            //this.connection.chann.close();
-            //this.player.disconnected = true;
-
             ((ILogoutRules) this.player).al_onRealDisconnect();
 
             // Disable disconnecting in this case

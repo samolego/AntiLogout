@@ -46,7 +46,8 @@ public class AfkCommand {
                                 AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"),
                                         IntegerArgumentType.getInteger(ctx, "time") * 1000L))
                 )
-                .executes(ctx -> AfkCommand.afkPlayers(Collections.singleton(ctx.getSource().getPlayerOrException()), config.maxAfkTime)));
+                .executes(ctx ->
+                        AfkCommand.afkPlayers(Collections.singleton(ctx.getSource().getPlayerOrException()), config.maxAfkTime)));
     }
 
     /**
@@ -59,7 +60,8 @@ public class AfkCommand {
      */
     private static int afkPlayers(Collection<ServerPlayer> players, long timeLimit) {
         for (var player : players) {
-            ((ILogoutRules) player).al_setAllowDisconnectAt(System.currentTimeMillis() + timeLimit);
+            long disconnectAt = timeLimit == -1 ? -1 : System.currentTimeMillis() + timeLimit;
+            ((ILogoutRules) player).al_setAllowDisconnectAt(disconnectAt);
             player.connection.disconnect(AntiLogout.AFK_MESSAGE);
         }
         return players.isEmpty() ? 0 : 1;

@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -46,10 +45,5 @@ public class MPlayerList {
             // Removes player so that the internal finite state machine in ServerLoginPacketListenerImpl can continue
             this.server.getPlayerList().remove(player);
         }
-    }
-
-    @Inject(method = "remove", at = @At("RETURN"))
-    private void onPlayerLeave(ServerPlayer player, CallbackInfo ci) {
-        //ILogoutRules.DISCONNECTED_PLAYERS.remove(player);
     }
 }

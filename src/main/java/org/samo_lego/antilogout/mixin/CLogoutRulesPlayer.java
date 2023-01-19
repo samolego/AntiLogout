@@ -1,12 +1,11 @@
 package org.samo_lego.antilogout.mixin;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.damagesource.DamageSource;
 import org.samo_lego.antilogout.datatracker.ILogoutRules;
-import org.spongepowered.asm.mixin.Final;
+import org.samo_lego.antilogout.event.EventHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,13 +24,8 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
 
     @Shadow
     public ServerGamePacketListenerImpl connection;
-
-    @Shadow
-    @Final
-    public MinecraftServer server;
-
-    @Shadow
-    public abstract void disconnect();
+    @Unique
+    private boolean executedDisconnect = false;
 
     @Override
     public boolean al_allowDisconnect() {
@@ -67,11 +61,15 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
         cir.setReturnValue(this.al_allowDisconnect() && this.disconnected);
     }
 
-    @Inject(method = "doTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getInventory()Lnet/minecraft/world/entity/player/Inventory;"), cancellable = true)
+    @Inject(method = "doTick",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/server/level/ServerPlayer;getInventory()Lnet/minecraft/world/entity/player/Inventory;"),
+            cancellable = true)
     private void onTick(CallbackInfo ci) {
         if (this.al_isFake()) {
-            if (this.al_allowDisconnect()) {
+            if (this.al_allowDisconnect() && !this.executedDisconnect) {
                 this.connection.disconnect(Component.empty());
+                this.executedDisconnect = true;  // Prevent disconnecting twice
             }
             ci.cancel();
         }
@@ -89,5 +87,10 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     @Inject(method = "disconnect", at = @At("TAIL"))
     private void al_disconnect(CallbackInfo ci) {
         DISCONNECTED_PLAYERS.remove((ServerPlayer) (Object) this);
+    }
+
+    @Inject(method = "hurt", at = @At("TAIL"))
+    private void onHurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
+        EventHandler.onHurt((ServerPlayer) (Object) this, damageSource);
     }
 }
