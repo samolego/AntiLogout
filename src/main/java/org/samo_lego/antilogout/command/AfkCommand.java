@@ -2,7 +2,7 @@ package org.samo_lego.antilogout.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.minecraft.commands.CommandBuildContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -13,6 +13,7 @@ import org.samo_lego.antilogout.datatracker.ILogoutRules;
 import java.util.Collection;
 import java.util.Collections;
 
+import static net.minecraft.commands.Commands.literal;
 import static org.samo_lego.antilogout.AntiLogout.config;
 
 
@@ -26,28 +27,34 @@ public class AfkCommand {
      * [time]        := puts executor afk for specified time.
      *
      * @param dispatcher command dispatcher
-     * @param context    cmd build context
-     * @param selection  command selection
      */
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection selection) {
-        dispatcher.register(Commands.literal("afk")
-                .requires(src -> src.hasPermission(2))
-                .then(Commands.argument("targets", EntityArgument.players())
-                        .then(Commands.argument("time", IntegerArgumentType.integer(5, config.maxAfkTime == -1 ? Integer.MAX_VALUE : config.maxAfkTime / 1000))
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(literal("afk")
+                .requires(src -> Permissions.check(src, "antilogout.command.afk", config.afk.permissionLevel))
+                .then(literal("players")
+                        .requires(src -> Permissions.check(src, "antilogout.command.afk.players", config.afk.permissionLevel))
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .then(literal("time")
+                                        .requires(src -> Permissions.check(src, "antilogout.command.afk.players.time", config.afk.permissionLevel))
+                                        .then(Commands.argument("time", IntegerArgumentType.integer(5, config.afk.maxAfkTime == -1 ? Integer.MAX_VALUE : config.afk.maxAfkTime / 1000))
+                                                .executes(ctx ->
+                                                        AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"),
+                                                                IntegerArgumentType.getInteger(ctx, "time") * 1000L))
+                                        )
+                                )
+                                .executes(ctx -> AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"), config.afk.maxAfkTime))
+                        )
+                )
+
+                .then(literal("time")
+                        .requires(src -> Permissions.check(src, "antilogout.command.afk.time", config.afk.permissionLevel))
+                        .then(Commands.argument("time", IntegerArgumentType.integer(5, config.afk.maxAfkTime == -1 ? Integer.MAX_VALUE : config.afk.maxAfkTime / 1000))
                                 .executes(ctx ->
                                         AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"),
                                                 IntegerArgumentType.getInteger(ctx, "time") * 1000L))
                         )
-                        .executes(ctx ->
-                                AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"), config.maxAfkTime))
                 )
-                .then(Commands.argument("time", IntegerArgumentType.integer(5, config.maxAfkTime == -1 ? Integer.MAX_VALUE : config.maxAfkTime / 1000))
-                        .executes(ctx ->
-                                AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"),
-                                        IntegerArgumentType.getInteger(ctx, "time") * 1000L))
-                )
-                .executes(ctx ->
-                        AfkCommand.afkPlayers(Collections.singleton(ctx.getSource().getPlayerOrException()), config.maxAfkTime)));
+                .executes(ctx -> AfkCommand.afkPlayers(Collections.singleton(ctx.getSource().getPlayerOrException()), config.afk.maxAfkTime)));
     }
 
     /**

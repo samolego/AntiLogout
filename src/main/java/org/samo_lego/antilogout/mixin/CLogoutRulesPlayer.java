@@ -76,14 +76,6 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     }
 
 
-    @Inject(method = "die", at = @At("TAIL"))
-    private void onDeath(DamageSource damageSource, CallbackInfo ci) {
-        if (this.al_isFake()) {
-            // Remove player from online players
-            this.connection.onDisconnect(Component.empty());
-        }
-    }
-
     @Inject(method = "disconnect", at = @At("TAIL"))
     private void al_disconnect(CallbackInfo ci) {
         DISCONNECTED_PLAYERS.remove((ServerPlayer) (Object) this);

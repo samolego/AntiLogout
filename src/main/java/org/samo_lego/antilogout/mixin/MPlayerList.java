@@ -16,6 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Kicks same players that are in {@link ILogoutRules#DISCONNECTED_PLAYERS} list
+ * when player with same UUID joins.
+ */
 @Mixin(PlayerList.class)
 public class MPlayerList {
 
@@ -44,6 +48,8 @@ public class MPlayerList {
 
             // Removes player so that the internal finite state machine in ServerLoginPacketListenerImpl can continue
             this.server.getPlayerList().remove(player);
+
+            ILogoutRules.DISCONNECTED_PLAYERS.remove(player);
         }
     }
 }
