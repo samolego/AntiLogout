@@ -35,5 +35,6 @@ public class AntiLogout implements DedicatedServerModInitializer {
             AfkCommand.register(dispatcher);
             AntiLogoutCommand.register(dispatcher);
         });
+        LOGGER.info("AntiLogout initialized.");
     }
 }

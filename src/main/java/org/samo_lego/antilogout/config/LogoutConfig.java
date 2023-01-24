@@ -37,8 +37,8 @@ public class LogoutConfig implements IBrigadierConfigurator {
     public CombatLog combatLog = new CombatLog();
 
     public static class CombatLog {
-        @SerializedName("// After how many milliseconds player leaves 'combat' mode and can disconnect.")
-        public final String _comment_disconnectTimeout = "";
+        @SerializedName("// After how many milliseconds player leaves 'combat' mode and can disconnect, in milliseconds.")
+        public final String _comment_combatTimeout = "";
 
         @SerializedName("combat_timeout")
         public long combatTimeout = 1000 * 30;

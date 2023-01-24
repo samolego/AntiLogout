@@ -20,7 +20,7 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     private boolean disconnected;
 
     @Unique
-    private long allowDisconnect = 0;
+    private long allowDisconnectTime = 0;
 
     @Shadow
     public ServerGamePacketListenerImpl connection;
@@ -29,17 +29,17 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
 
     @Override
     public boolean al_allowDisconnect() {
-        return this.allowDisconnect != -1 && this.allowDisconnect <= System.currentTimeMillis();
+        return this.allowDisconnectTime != -1 && this.allowDisconnectTime <= System.currentTimeMillis();
     }
 
     @Override
     public void al_setAllowDisconnectAt(long systemTime) {
-        this.allowDisconnect = systemTime;
+        this.allowDisconnectTime = systemTime;
     }
 
     @Override
     public void al_setAllowDisconnect(boolean allow) {
-        this.allowDisconnect = allow ? 0 : -1;
+        this.allowDisconnectTime = allow ? 0 : -1;
     }
 
     @Override
