@@ -1,9 +1,13 @@
 package org.samo_lego.antilogout.datatracker;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public interface ILogoutRules {
 
@@ -12,6 +16,8 @@ public interface ILogoutRules {
      * but are still present in the world.
      */
     Set<ServerPlayer> DISCONNECTED_PLAYERS = new HashSet<>();
+
+    Map<UUID, Component> SKIPPED_DEATH_MESSAGES = new HashMap<>();
 
     /**
      * Whether to allow disconnect for this player.

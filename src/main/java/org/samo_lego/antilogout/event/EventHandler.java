@@ -1,8 +1,12 @@
 package org.samo_lego.antilogout.event;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundPlayerCombatKillPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -17,6 +21,13 @@ import org.samo_lego.antilogout.datatracker.ILogoutRules;
 
 import static org.samo_lego.antilogout.AntiLogout.config;
 
+/**
+ * Takes care of events.
+ * We could use {@link ServerPlayer#onEnterCombat()}
+ * and {@link ServerPlayer#onLeaveCombat()} but
+ * since we want configurable combat timeout, we
+ * have to use fabric events.
+ */
 public class EventHandler {
 
 
@@ -81,6 +92,15 @@ public class EventHandler {
             }
         } else if (damageSource.getEntity() instanceof Player || !config.combatLog.playerHurtOnly) {
             ((ILogoutRules) target).al_setAllowDisconnectAt(allowedDc);
+        }
+    }
+
+    public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
+        final Component deathMessage = ILogoutRules.SKIPPED_DEATH_MESSAGES.get(listener.player.getUUID());
+        if (deathMessage != null) {
+            listener.player.displayClientMessage(deathMessage, false);
+            listener.send(new ClientboundPlayerCombatKillPacket(listener.player.getCombatTracker(), deathMessage));
+            ILogoutRules.SKIPPED_DEATH_MESSAGES.remove(listener.player.getUUID());
         }
     }
 }
