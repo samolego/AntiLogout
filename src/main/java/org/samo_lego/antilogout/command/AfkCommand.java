@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerPlayer;
 import org.samo_lego.antilogout.AntiLogout;
 import org.samo_lego.antilogout.datatracker.ILogoutRules;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import static net.minecraft.commands.Commands.literal;
@@ -50,7 +49,7 @@ public class AfkCommand {
                         .requires(src -> Permissions.check(src, "antilogout.command.afk.time", config.afk.permissionLevel))
                         .then(Commands.argument("time", DoubleArgumentType.doubleArg(5, config.afk.maxAfkTime == -1 ? Double.MAX_VALUE : config.afk.maxAfkTime))
                                 .executes(ctx ->
-                                        AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"),
+                                        AfkCommand.afkPlayers(Collections.singletonList(ctx.getSource().getPlayerOrException()),
                                                 DoubleArgumentType.getDouble(ctx, "time")))
                         )
                 )
@@ -65,12 +64,12 @@ public class AfkCommand {
      * @param players players to afk
      * @return 1 as success, 0 if possible players to afk are empty
      */
-    private static int afkPlayers(Collection<ServerPlayer> players, double timeLimit) {
+    private static int afkPlayers(Iterable<ServerPlayer> players, double timeLimit) {
         for (var player : players) {
             long disconnectAt = timeLimit == -1 ? -1 : System.currentTimeMillis() + (long) (timeLimit * 1000);
             ((ILogoutRules) player).al_setAllowDisconnectAt(disconnectAt);
             player.connection.disconnect(AntiLogout.AFK_MESSAGE);
         }
-        return players.isEmpty() ? 0 : 1;
+        return players.iterator().hasNext() ? 0 : 1;
     }
 }
