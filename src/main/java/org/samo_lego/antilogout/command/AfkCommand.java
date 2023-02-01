@@ -1,7 +1,7 @@
 package org.samo_lego.antilogout.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -36,10 +36,10 @@ public class AfkCommand {
                         .then(Commands.argument("targets", EntityArgument.players())
                                 .then(literal("time")
                                         .requires(src -> Permissions.check(src, "antilogout.command.afk.players.time", config.afk.permissionLevel))
-                                        .then(Commands.argument("time", IntegerArgumentType.integer(5, config.afk.maxAfkTime == -1 ? Integer.MAX_VALUE : config.afk.maxAfkTime / 1000))
+                                        .then(Commands.argument("time", DoubleArgumentType.doubleArg(5, config.afk.maxAfkTime == -1 ? Double.MAX_VALUE : config.afk.maxAfkTime))
                                                 .executes(ctx ->
                                                         AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"),
-                                                                IntegerArgumentType.getInteger(ctx, "time") * 1000L))
+                                                                DoubleArgumentType.getDouble(ctx, "time")))
                                         )
                                 )
                                 .executes(ctx -> AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"), config.afk.maxAfkTime))
@@ -48,10 +48,10 @@ public class AfkCommand {
 
                 .then(literal("time")
                         .requires(src -> Permissions.check(src, "antilogout.command.afk.time", config.afk.permissionLevel))
-                        .then(Commands.argument("time", IntegerArgumentType.integer(5, config.afk.maxAfkTime == -1 ? Integer.MAX_VALUE : config.afk.maxAfkTime / 1000))
+                        .then(Commands.argument("time", DoubleArgumentType.doubleArg(5, config.afk.maxAfkTime == -1 ? Double.MAX_VALUE : config.afk.maxAfkTime))
                                 .executes(ctx ->
                                         AfkCommand.afkPlayers(EntityArgument.getPlayers(ctx, "targets"),
-                                                IntegerArgumentType.getInteger(ctx, "time") * 1000L))
+                                                DoubleArgumentType.getDouble(ctx, "time")))
                         )
                 )
                 .executes(ctx -> AfkCommand.afkPlayers(Collections.singleton(ctx.getSource().getPlayerOrException()), config.afk.maxAfkTime)));
@@ -65,9 +65,9 @@ public class AfkCommand {
      * @param players players to afk
      * @return 1 as success, 0 if possible players to afk are empty
      */
-    private static int afkPlayers(Collection<ServerPlayer> players, long timeLimit) {
+    private static int afkPlayers(Collection<ServerPlayer> players, double timeLimit) {
         for (var player : players) {
-            long disconnectAt = timeLimit == -1 ? -1 : System.currentTimeMillis() + timeLimit;
+            long disconnectAt = timeLimit == -1 ? -1 : System.currentTimeMillis() + (long) (timeLimit * 1000);
             ((ILogoutRules) player).al_setAllowDisconnectAt(disconnectAt);
             player.connection.disconnect(AntiLogout.AFK_MESSAGE);
         }

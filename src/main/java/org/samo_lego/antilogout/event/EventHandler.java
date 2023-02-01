@@ -43,7 +43,7 @@ public class EventHandler {
      */
     public static InteractionResult onAttack(Player attacker, Level level, InteractionHand interactionHand, Entity target, @Nullable EntityHitResult entityHitResult) {
         if (target instanceof ILogoutRules || !config.combatLog.playerHurtOnly) {
-            long allowedDc = System.currentTimeMillis() + config.combatLog.combatTimeout;
+            long allowedDc = System.currentTimeMillis() + (long) (config.combatLog.combatTimeout * 1000);
 
             // Mark target
             if (target instanceof ILogoutRules && !Permissions.check(target, "antilogout.bypass.combat", config.combatLog.bypassPermissionLevel)) {
@@ -81,7 +81,7 @@ public class EventHandler {
      * @param damageSource damage source
      */
     public static void onHurt(ServerPlayer target, DamageSource damageSource) {
-        long allowedDc = System.currentTimeMillis() + config.combatLog.combatTimeout;
+        long allowedDc = System.currentTimeMillis() + (long) (config.combatLog.combatTimeout * 1000);
         if (damageSource.getEntity() instanceof Projectile p && p.getOwner() instanceof ServerPlayer attacker) {
             if (!Permissions.check(attacker, "antilogout.bypass.combat", config.combatLog.bypassPermissionLevel)) {
                 ((ILogoutRules) attacker).al_setAllowDisconnectAt(allowedDc);
