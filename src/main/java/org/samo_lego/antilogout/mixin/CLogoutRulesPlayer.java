@@ -26,6 +26,10 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     public ServerGamePacketListenerImpl connection;
     @Unique
     private boolean executedDisconnect = false;
+    @Unique
+    private Runnable delayedTask;
+    @Unique
+    private long taskTime;
 
     @Override
     public boolean al_allowDisconnect() {
@@ -72,6 +76,9 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
                 this.executedDisconnect = true;  // Prevent disconnecting twice
             }
             ci.cancel();
+        } else if (this.delayedTask != null && this.taskTime <= System.currentTimeMillis()) {
+            this.delayedTask.run();
+            this.delayedTask = null;
         }
     }
 
@@ -84,5 +91,12 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     @Inject(method = "hurt", at = @At("TAIL"))
     private void onHurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         EventHandler.onHurt((ServerPlayer) (Object) this, damageSource);
+    }
+
+    @Override
+    public void al$delay(long tickDuration, Runnable task) {
+        System.out.println("Delaying task for " + tickDuration + " ticks");
+        this.delayedTask = task;
+        this.taskTime = tickDuration;
     }
 }

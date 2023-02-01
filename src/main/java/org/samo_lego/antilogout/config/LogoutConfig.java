@@ -56,5 +56,16 @@ public class LogoutConfig implements IBrigadierConfigurator {
         public final String _comment_bypassPermissionLevel1 = "";
         @SerializedName("required_bypass_permission_level")
         public int bypassPermissionLevel = 4;
+
+
+        @SerializedName("// If true, player will be notified when combat starts / ends.")
+        public final String _comment_notifyOnCombat = "";
+        @SerializedName("notify_combat")
+        public boolean notifyOnCombat = true;
+
+        @SerializedName("combat_mode_message")
+        public String combatEnterMessage = "Combat mode active (%s seconds).";
+        @SerializedName("safe_disconnect_message")
+        public String combatEndMessage = "You can now disconnect safely.";
     }
 }

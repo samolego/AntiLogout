@@ -66,7 +66,7 @@ public class AfkCommand {
      */
     private static int afkPlayers(Iterable<ServerPlayer> players, double timeLimit) {
         for (var player : players) {
-            long disconnectAt = timeLimit == -1 ? -1 : System.currentTimeMillis() + (long) (timeLimit * 1000);
+            long disconnectAt = timeLimit == -1 ? -1 : System.currentTimeMillis() + Math.round(timeLimit * 1000);
             ((ILogoutRules) player).al_setAllowDisconnectAt(disconnectAt);
             player.connection.disconnect(AntiLogout.AFK_MESSAGE);
         }
