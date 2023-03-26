@@ -2,6 +2,10 @@
 
 Anti logout serverside mod! Provides /afk and disables combat logging.
 
+*When players log out while in combat, their
+"body" stays online for specified amoumt of
+time.*
+
 ## Permissions
 
 * `antilogout.bypass.combat` - Allows the player to bypass being tagged in combat
