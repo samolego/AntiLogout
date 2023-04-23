@@ -21,9 +21,9 @@ public class AfkCommand {
     /**
      * Registers /afk command.
      * Usage: /afk              := puts executor afk for max time.
-     * [players]     := puts all specified players afk for max time.
-     * [time]    := puts all specified players afk for specified time.
-     * [time]        := puts executor afk for specified time.
+     * -----------[players]     := puts all specified players afk for max time.
+     * ==========+----[time]    := puts all specified players afk for specified time.
+     * -----------[time]        := puts executor afk for specified time.
      *
      * @param dispatcher command dispatcher
      */

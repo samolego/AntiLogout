@@ -1,7 +1,9 @@
 plugins {
-	id 'fabric-loom' version '1.0-SNAPSHOT'
+	id 'fabric-loom' version '1.1-SNAPSHOT'
 	id 'maven-publish'
-	
+
+	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -37,7 +39,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation(include('me.lucko:fabric-permissions-api:0.2-SNAPSHOT'))
-	modImplementation include('com.github.samolego.Config2Brigadier:config2brigadier-fabric:2ef4ad70e5')
+	modImplementation include("com.github.samolego.Config2Brigadier:config2brigadier-fabric:${project.config2brigadier_version}")
 }
 
 processResources {
@@ -61,9 +63,11 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${project.archivesBaseName}" }
 	}
 }
+
+def ENV = System.getenv()
 
 // configure the maven publication
 publishing {
@@ -80,4 +84,55 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+
+// from FAPI https://github.com/FabricMC/fabric/blob/1.16/build.gradle
+curseforge {
+	if (ENV.CURSEFORGE_API_KEY) {
+		apiKey = ENV.CURSEFORGE_API_KEY
+	}
+
+	project {
+		id = "817455"
+		changelog = "A changelog can be found at https://github.com/samolego/AntiLogout/releases/tag/${version}"
+		releaseType = "release"
+		addGameVersion "${project.minecraft_version}"
+		addGameVersion "Fabric"
+		addGameVersion "Quilt"
+
+		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
+			displayName = "[${project.minecraft_version}] AntiLogout ${version}"
+		}
+
+		afterEvaluate {
+			uploadTask.dependsOn("remapJar")
+		}
+	}
+
+	options {
+		forgeGradleIntegration = false
+	}
+}
+
+
+tasks.modrinth {
+	onlyIf {
+		ENV.MODRINTH_TOKEN
+	}
+}
+
+modrinth {
+	token = ENV.MODRINTH_TOKEN
+	projectId = "gnfTfbZi"
+	changelog = ENV.CHANGELOG ?: "A changelog can be found at https://github.com/samolego/AntiLogout/releases/tag/${version}"
+	versionNumber = version
+	versionName = "[${project.minecraft_version}] AntiLogout ${version}"
+	versionType = "release"
+
+	uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")
+
+	gameVersions = [project.minecraft_version]
+	loaders = ['fabric', 'quilt']
+
 }

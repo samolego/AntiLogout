@@ -11,10 +11,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientboundPlayerCombatKillPacket.class)
 public class MClientboundPlayerCombatKillPacket {
+
+    /**
+     * Saves death message for later if player is fake.
+     *
+     * @param combatTracker
+     * @param component
+     * @param ci
+     */
     @Inject(method = "<init>(Lnet/minecraft/world/damagesource/CombatTracker;Lnet/minecraft/network/chat/Component;)V", at = @At("RETURN"))
     private void constructor(CombatTracker combatTracker, Component component, CallbackInfo ci) {
         if (combatTracker.getMob() instanceof ILogoutRules rules && rules.al_isFake()) {
-            // Player won't see death message, we must save it for later (#1)
+            // Player won't see death message, we must save it for later (issue #1)
             ILogoutRules.SKIPPED_DEATH_MESSAGES.put(combatTracker.getMob().getUUID(), component);
         }
     }

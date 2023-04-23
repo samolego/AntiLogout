@@ -14,6 +14,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * Implements {@link ILogoutRules} for {@link ServerPlayer}.
+ */
 @Mixin(ServerPlayer.class)
 public abstract class CLogoutRulesPlayer implements ILogoutRules {
     @Shadow
@@ -95,7 +98,6 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
 
     @Override
     public void al$delay(long tickDuration, Runnable task) {
-        System.out.println("Delaying task for " + tickDuration + " ticks");
         this.delayedTask = task;
         this.taskTime = tickDuration;
     }
