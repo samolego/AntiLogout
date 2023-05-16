@@ -3,7 +3,7 @@
 Anti logout serverside mod! Provides /afk and disables combat logging.
 
 *When players log out while in combat, their
-"body" stays online for specified amoumt of
+"body" stays online for specified amount of
 time.*
 
 ## Permissions
