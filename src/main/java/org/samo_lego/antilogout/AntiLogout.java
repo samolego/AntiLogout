@@ -25,7 +25,6 @@ public class AntiLogout implements DedicatedServerModInitializer {
         config = IBrigadierConfigurator.loadConfigFile(LogoutConfig.CONFIG_FILE, LogoutConfig.class, LogoutConfig::new);
 
         AFK_MESSAGE = Component.translatable(config.afk.afkMessage);
-
     }
 
     @Override
@@ -38,6 +37,7 @@ public class AntiLogout implements DedicatedServerModInitializer {
             AfkCommand.register(dispatcher);
             AntiLogoutCommand.register(dispatcher);
         });
+
         LOGGER.info("AntiLogout initialized.");
     }
 }

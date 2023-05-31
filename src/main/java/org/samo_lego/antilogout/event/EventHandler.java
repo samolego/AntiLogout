@@ -34,14 +34,14 @@ public class EventHandler {
     /**
      * Marks attacker and target as "in combat state".
      *
-     * @param attacker        player who attacked
-     * @param level           world
-     * @param interactionHand hand used to attack
-     * @param target          targeted entity
-     * @param entityHitResult hit result
+     * @param attacker         player who attacked
+     * @param _level           world
+     * @param _interactionHand hand used to attack
+     * @param target           targeted entity
+     * @param _entityHitResult hit result
      * @return {@link InteractionResult#PASS}
      */
-    public static InteractionResult onAttack(Player attacker, Level level, InteractionHand interactionHand, Entity target, @Nullable EntityHitResult entityHitResult) {
+    public static InteractionResult onAttack(Player attacker, Level _level, InteractionHand _interactionHand, Entity target, @Nullable EntityHitResult _entityHitResult) {
         if (target instanceof ILogoutRules || !config.combatLog.playerHurtOnly) {
             long allowedDc = System.currentTimeMillis() + Math.round(config.combatLog.combatTimeout * 1000);
 
@@ -61,10 +61,10 @@ public class EventHandler {
     /**
      * Disconnects afk player on death.
      *
-     * @param deadEntity   entity that died
-     * @param damageSource damage source of death
+     * @param deadEntity    entity that died
+     * @param _damageSource damage source of death
      */
-    public static void onDeath(LivingEntity deadEntity, DamageSource damageSource) {
+    public static void onDeath(LivingEntity deadEntity, DamageSource _damageSource) {
         if (deadEntity instanceof ILogoutRules player && player.al_isFake()) {
             // Remove player from online players
             ((ServerPlayer) player).connection.onDisconnect(Component.empty());
@@ -95,11 +95,19 @@ public class EventHandler {
         }
     }
 
-    public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
+    /**
+     * Sends death message to player if they died while disconnected,
+     * but still present in the world.
+     *
+     * @param listener packet listener
+     * @param _sender  packet sender
+     * @param _server  minecraft server
+     */
+    public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender _sender, MinecraftServer _server) {
         final Component deathMessage = ILogoutRules.SKIPPED_DEATH_MESSAGES.get(listener.player.getUUID());
         if (deathMessage != null) {
             listener.player.displayClientMessage(deathMessage, false);
-            listener.send(new ClientboundPlayerCombatKillPacket(listener.player.getCombatTracker(), deathMessage));
+            listener.send(new ClientboundPlayerCombatKillPacket(listener.player.getId(), deathMessage));
             ILogoutRules.SKIPPED_DEATH_MESSAGES.remove(listener.player.getUUID());
         }
     }

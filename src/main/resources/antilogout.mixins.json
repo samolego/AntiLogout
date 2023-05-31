@@ -4,11 +4,11 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "CLogoutRulesPlayer",
-    "MClientboundPlayerCombatKillPacket",
     "MConnection",
     "MPlayerList",
     "MServerConnectionListener",
-    "MServerGamePacketListenerImpl"
+    "MServerGamePacketListenerImpl",
+    "MServerPlayer_DeathMsgSaver"
   ],
   "injectors": {
     "defaultRequire": 1
