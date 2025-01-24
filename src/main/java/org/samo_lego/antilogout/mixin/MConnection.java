@@ -26,7 +26,7 @@ public abstract class MConnection {
      *
      * @param ci
      */
-    @Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketListener;onDisconnect(Lnet/minecraft/network/chat/Component;)V", ordinal = 1), cancellable = true)
+    @Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketListener;onDisconnect(Lnet/minecraft/network/DisconnectionDetails;)V"), cancellable = true)
     private void al_handleDisconnection(CallbackInfo ci) {
         if (this.getPacketListener() instanceof ServerGamePacketListenerImpl listener) {
             if (!((ILogoutRules) listener.getPlayer()).al_allowDisconnect()) {

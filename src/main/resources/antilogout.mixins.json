@@ -6,6 +6,7 @@
     "CLogoutRulesPlayer",
     "MConnection",
     "MPlayerList",
+    "MServerCommonPacketListenerImpl",
     "MServerConnectionListener",
     "MServerGamePacketListenerImpl",
     "MServerPlayer_DeathMsgSaver"
