@@ -2,6 +2,7 @@ package org.samo_lego.antilogout.event;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerCombatKillPacket;
 import net.minecraft.server.MinecraftServer;
@@ -67,7 +68,7 @@ public class EventHandler {
     public static void onDeath(LivingEntity deadEntity, DamageSource _damageSource) {
         if (deadEntity instanceof ILogoutRules player && player.al_isFake()) {
             // Remove player from online players
-            ((ServerPlayer) player).connection.onDisconnect(Component.empty());
+            ((ServerPlayer) player).connection.onDisconnect(new DisconnectionDetails(Component.empty()));
         }
     }
 
