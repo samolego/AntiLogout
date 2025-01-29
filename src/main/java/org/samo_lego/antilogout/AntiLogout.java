@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
 
 
 public class AntiLogout implements DedicatedServerModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger("antilogout");
+    public static final String MOD_ID = "antilogout";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static final LogoutConfig config;
     public static final Component AFK_MESSAGE;
-    public static final String MOD_ID = "antilogout";
 
     static {
         config = LogoutConfig.readConfigFile();
