@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.damagesource.DamageSource;
+import org.samo_lego.antilogout.AntiLogout;
 import org.samo_lego.antilogout.datatracker.ILogoutRules;
 import org.samo_lego.antilogout.event.EventHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.io.ObjectInputFilter.Config;
 
 /**
  * Implements {@link ILogoutRules} for {@link ServerPlayer}.
@@ -35,8 +38,8 @@ public abstract class CLogoutRulesPlayer implements ILogoutRules {
     private long taskTime;
 
     @Override
-    public boolean al_allowDisconnect() {
-        return this.allowDisconnectTime != -1 && this.allowDisconnectTime <= System.currentTimeMillis();
+    public boolean al_allowDisconnect() {   
+        return this.allowDisconnectTime != -1 && this.allowDisconnectTime <= System.currentTimeMillis() && !AntiLogout.config.disableAllLogouts;
     }
 
     @Override

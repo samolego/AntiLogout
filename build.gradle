@@ -39,7 +39,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation(include('me.lucko:fabric-permissions-api:0.2-SNAPSHOT'))
-	modImplementation include("com.github.samolego.Config2Brigadier:config2brigadier-fabric:${project.config2brigadier_version}")
+	modImplementation include("com.github.samolego:Config2Brigadier:${project.config2brigadier_version}")
 }
 
 processResources {

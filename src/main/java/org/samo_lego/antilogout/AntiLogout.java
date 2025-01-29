@@ -10,7 +10,6 @@ import org.samo_lego.antilogout.command.AfkCommand;
 import org.samo_lego.antilogout.command.AntiLogoutCommand;
 import org.samo_lego.antilogout.config.LogoutConfig;
 import org.samo_lego.antilogout.event.EventHandler;
-import org.samo_lego.config2brigadier.IBrigadierConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +19,14 @@ public class AntiLogout implements DedicatedServerModInitializer {
 
     public static final LogoutConfig config;
     public static final Component AFK_MESSAGE;
+    public static final String MOD_ID = "antilogout";
 
     static {
-        config = IBrigadierConfigurator.loadConfigFile(LogoutConfig.CONFIG_FILE, LogoutConfig.class, LogoutConfig::new);
+        config = LogoutConfig.readConfigFile();
 
         AFK_MESSAGE = Component.translatable(config.afk.afkMessage);
     }
+    
 
     @Override
     public void onInitializeServer() {
